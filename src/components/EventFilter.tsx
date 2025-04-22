@@ -48,7 +48,7 @@ const EventFilter = ({ onFilterChange }: FilterProps) => {
               <SelectValue placeholder="Select sport" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Sports</SelectItem>
+              <SelectItem value="all">All Sports</SelectItem>
               <SelectItem value="Basketball">Basketball</SelectItem>
               <SelectItem value="Football">Football</SelectItem>
               <SelectItem value="Tennis">Tennis</SelectItem>

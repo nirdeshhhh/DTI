@@ -21,7 +21,7 @@ const Index = () => {
     // Basic filtering for demonstration
     let filtered = mockEvents;
     
-    if (filters.sport) {
+    if (filters.sport && filters.sport !== "all") {
       filtered = filtered.filter(event => event.sport === filters.sport);
     }
     
