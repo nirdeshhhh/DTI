@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { createEvent } from "@/services/eventsService";
 
 const EventCreationForm = () => {
   const { toast } = useToast();
@@ -60,16 +60,34 @@ const EventCreationForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // In a real app, you'd send this to your backend
-    console.log("Form submitted:", formData);
-    
-    toast({
-      title: "Event Created!",
-      description: "Your sports event has been created successfully.",
-    });
-    
-    // Redirect to home page after creating event
-    navigate("/");
+    try {
+      // Create the event using our service
+      const newEvent = createEvent({
+        sport: formData.sport,
+        location: formData.location,
+        date: formData.date,
+        time: formData.time,
+        totalSpots: parseInt(formData.totalSpots),
+        description: formData.description
+      });
+      
+      console.log("Event created:", newEvent);
+      
+      toast({
+        title: "Event Created!",
+        description: "Your sports event has been created successfully.",
+      });
+      
+      // Redirect to home page after creating event
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating event:", error);
+      toast({
+        title: "Error",
+        description: "There was an error creating your event. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (

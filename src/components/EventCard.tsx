@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
+import { joinEvent } from "@/services/eventsService";
 
 interface EventCardProps {
   id: string;
@@ -30,10 +31,29 @@ const EventCard = ({
   const { toast } = useToast();
 
   const handleJoin = () => {
-    toast({
-      title: "Request Sent!",
-      description: `You've requested to join the ${sport} event. The host will review your request.`,
-    });
+    try {
+      const updatedEvent = joinEvent(id);
+      
+      if (updatedEvent) {
+        toast({
+          title: "Request Sent!",
+          description: `You've requested to join the ${sport} event. The host will review your request.`,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "This event is either full or no longer available.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error("Error joining event:", error);
+      toast({
+        title: "Error",
+        description: "There was an error joining this event. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -60,8 +80,12 @@ const EventCard = ({
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" onClick={handleJoin}>
-          Join Event
+        <Button 
+          className="w-full" 
+          onClick={handleJoin}
+          disabled={spotsAvailable <= 0}
+        >
+          {spotsAvailable > 0 ? 'Join Event' : 'Event Full'}
         </Button>
       </CardFooter>
     </Card>

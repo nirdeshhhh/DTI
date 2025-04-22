@@ -1,15 +1,27 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import EventCard from "@/components/EventCard";
 import EventFilter from "@/components/EventFilter";
 import { Button } from "@/components/ui/button";
-import { mockEvents } from "@/lib/mock-data";
+import { Event, getAllEvents, getFilteredEvents } from "@/services/eventsService";
 
 const Index = () => {
   const [viewMode, setViewMode] = useState<"join" | "create">("join");
-  const [filteredEvents, setFilteredEvents] = useState(mockEvents);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+
+  // Load events on component mount
+  useEffect(() => {
+    const loadEvents = () => {
+      const allEvents = getAllEvents();
+      setEvents(allEvents);
+      setFilteredEvents(allEvents);
+    };
+    
+    loadEvents();
+  }, []);
 
   const handleFilterChange = (filters: {
     sport: string;
@@ -18,17 +30,11 @@ const Index = () => {
   }) => {
     console.log("Filters applied:", filters);
     
-    // Basic filtering for demonstration
-    let filtered = mockEvents;
-    
-    if (filters.sport && filters.sport !== "all") {
-      filtered = filtered.filter(event => event.sport === filters.sport);
-    }
-    
-    if (filters.date) {
-      const dateStr = filters.date.toISOString().split('T')[0];
-      filtered = filtered.filter(event => event.date === dateStr);
-    }
+    const filtered = getFilteredEvents({
+      sport: filters.sport,
+      date: filters.date,
+      distance: filters.distance
+    });
     
     setFilteredEvents(filtered);
   };
