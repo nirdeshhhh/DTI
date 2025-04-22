@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
+import EditProfileDialog from "./EditProfileDialog";
 
 interface UserProfileProps {
   isCurrentUser?: boolean;
@@ -14,8 +15,8 @@ interface UserProfileProps {
 const UserProfile = ({ isCurrentUser = true }: UserProfileProps) => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("events");
-  
-  const mockUser = {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [mockUser, setMockUser] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
     phone: "+1 (555) 123-4567",
@@ -23,7 +24,7 @@ const UserProfile = ({ isCurrentUser = true }: UserProfileProps) => {
     verifications: ["email", "phone"],
     rating: 4.8,
     reviewCount: 12
-  };
+  });
   
   const handleVerificationClick = () => {
     toast({
@@ -32,6 +33,15 @@ const UserProfile = ({ isCurrentUser = true }: UserProfileProps) => {
     });
   };
   
+  const handleSaveProfile = (userData: { name: string; email: string; phone: string }) => {
+    setMockUser({
+      ...mockUser,
+      name: userData.name,
+      email: userData.email,
+      phone: userData.phone
+    });
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -77,7 +87,11 @@ const UserProfile = ({ isCurrentUser = true }: UserProfileProps) => {
           </div>
           
           {isCurrentUser && (
-            <Button variant="outline" className="mt-4">
+            <Button 
+              variant="outline" 
+              className="mt-4" 
+              onClick={() => setIsEditDialogOpen(true)}
+            >
               Edit Profile
             </Button>
           )}
@@ -131,6 +145,15 @@ const UserProfile = ({ isCurrentUser = true }: UserProfileProps) => {
           </TabsContent>
         )}
       </Tabs>
+      
+      {isCurrentUser && (
+        <EditProfileDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          user={mockUser}
+          onSave={handleSaveProfile}
+        />
+      )}
     </div>
   );
 };
