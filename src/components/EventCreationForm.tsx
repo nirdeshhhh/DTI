@@ -19,6 +19,8 @@ import { CalendarIcon, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "@/services/eventsService";
 
+// ...imports remain unchanged
+
 const EventCreationForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -49,20 +51,13 @@ const EventCreationForm = () => {
     }
   };
 
-  const handleNext = () => {
-    setFormStage((prev) => prev + 1);
-  };
-
-  const handlePrevious = () => {
-    setFormStage((prev) => prev - 1);
-  };
+  const handleNext = () => setFormStage((prev) => prev + 1);
+  const handlePrevious = () => setFormStage((prev) => prev - 1);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-      // Create the event using our service
-      const newEvent = createEvent({
+      createEvent({
         sport: formData.sport,
         location: formData.location,
         date: formData.date,
@@ -70,18 +65,14 @@ const EventCreationForm = () => {
         totalSpots: parseInt(formData.totalSpots),
         description: formData.description
       });
-      
-      console.log("Event created:", newEvent);
-      
+
       toast({
         title: "Event Created!",
         description: "Your sports event has been created successfully.",
       });
-      
-      // Redirect to home page after creating event
+
       navigate("/");
     } catch (error) {
-      console.error("Error creating event:", error);
       toast({
         title: "Error",
         description: "There was an error creating your event. Please try again.",
@@ -91,19 +82,15 @@ const EventCreationForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-xl mx-auto p-6 space-y-8 bg-white rounded-xl shadow-md">
       {formStage === 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold">Basic Event Details</h2>
-          
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold">🏟️ Basic Event Details</h2>
+
           <div className="space-y-2">
             <Label htmlFor="sport">Sport Type</Label>
-            <Select
-              value={formData.sport}
-              onValueChange={(value) => handleSelectChange("sport", value)}
-              required
-            >
-              <SelectTrigger id="sport">
+            <Select value={formData.sport} onValueChange={(value) => handleSelectChange("sport", value)} required>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a sport" />
               </SelectTrigger>
               <SelectContent>
@@ -115,7 +102,7 @@ const EventCreationForm = () => {
               </SelectContent>
             </Select>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="location">Location</Label>
             <Input
@@ -123,21 +110,21 @@ const EventCreationForm = () => {
               name="location"
               value={formData.location}
               onChange={handleInputChange}
-              placeholder="Enter location"
+              placeholder="Enter the match location"
               required
             />
           </div>
-          
-          <div className="flex justify-end">
-            <Button type="button" onClick={handleNext}>Next</Button>
+
+          <div className="flex justify-end pt-4">
+            <Button onClick={handleNext} className="px-6">Next</Button>
           </div>
         </div>
       )}
-      
+
       {formStage === 1 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold">Date & Time</h2>
-          
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold">📅 Date & Time</h2>
+
           <div className="space-y-2">
             <Label>Date</Label>
             <Popover>
@@ -153,22 +140,21 @@ const EventCreationForm = () => {
                   {date ? format(date, "PPP") : "Pick a date"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
+              <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
                   selected={date}
                   onSelect={handleDateSelect}
                   initialFocus
-                  required
                 />
               </PopoverContent>
             </Popover>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="time">Time</Label>
-            <div className="flex items-center">
-              <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-muted-foreground" />
               <Input
                 id="time"
                 name="time"
@@ -179,22 +165,18 @@ const EventCreationForm = () => {
               />
             </div>
           </div>
-          
-          <div className="flex justify-between">
-            <Button type="button" variant="outline" onClick={handlePrevious}>
-              Previous
-            </Button>
-            <Button type="button" onClick={handleNext}>
-              Next
-            </Button>
+
+          <div className="flex justify-between pt-4">
+            <Button variant="outline" onClick={handlePrevious}>Previous</Button>
+            <Button onClick={handleNext}>Next</Button>
           </div>
         </div>
       )}
-      
+
       {formStage === 2 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold">Additional Details</h2>
-          
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold">📝 Additional Details</h2>
+
           <div className="space-y-2">
             <Label htmlFor="totalSpots">Number of Spots</Label>
             <Input
@@ -208,7 +190,7 @@ const EventCreationForm = () => {
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
@@ -216,16 +198,14 @@ const EventCreationForm = () => {
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Describe your event, skill level requirements, what to bring, etc."
+              placeholder="Skill level, rules, what to bring, etc."
               rows={4}
             />
           </div>
-          
-          <div className="flex justify-between">
-            <Button type="button" variant="outline" onClick={handlePrevious}>
-              Previous
-            </Button>
-            <Button type="submit">Create Event</Button>
+
+          <div className="flex justify-between pt-4">
+            <Button variant="outline" onClick={handlePrevious}>Previous</Button>
+            <Button type="submit" className="px-6">Create Event</Button>
           </div>
         </div>
       )}

@@ -1,8 +1,13 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input"; 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -17,18 +22,23 @@ interface EditProfileDialogProps {
   onSave: (userData: { name: string; email: string; phone: string }) => void;
 }
 
-const EditProfileDialog = ({ open, onOpenChange, user, onSave }: EditProfileDialogProps) => {
+const EditProfileDialog = ({
+  open,
+  onOpenChange,
+  user,
+  onSave,
+}: EditProfileDialogProps) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
-    phone: user.phone
+    phone: user.phone,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -36,60 +46,68 @@ const EditProfileDialog = ({ open, onOpenChange, user, onSave }: EditProfileDial
     e.preventDefault();
     onSave(formData);
     toast({
-      title: "Profile updated",
-      description: "Your profile information has been updated successfully."
+      title: "Profile Updated",
+      description: "Your profile information has been saved successfully.",
     });
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px] rounded-xl">
         <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">Edit Profile</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+        <form onSubmit={handleSubmit} className="space-y-6 pt-2">
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label htmlFor="name" className="text-sm font-medium">
                 Name
               </Label>
-              <Input 
+              <Input
                 id="name"
                 name="name"
-                value={formData.name} 
+                value={formData.name}
                 onChange={handleChange}
-                className="col-span-3" 
+                placeholder="Enter your name"
+                className="rounded-lg border focus:ring-2 focus:ring-primary"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
+            <div className="space-y-1">
+              <Label htmlFor="email" className="text-sm font-medium">
                 Email
               </Label>
-              <Input 
+              <Input
                 id="email"
-                name="email" 
+                name="email"
                 type="email"
-                value={formData.email} 
+                value={formData.email}
                 onChange={handleChange}
-                className="col-span-3" 
+                placeholder="you@example.com"
+                className="rounded-lg border focus:ring-2 focus:ring-primary"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phone" className="text-right">
+            <div className="space-y-1">
+              <Label htmlFor="phone" className="text-sm font-medium">
                 Phone
               </Label>
-              <Input 
+              <Input
                 id="phone"
-                name="phone" 
-                value={formData.phone} 
+                name="phone"
+                value={formData.phone}
                 onChange={handleChange}
-                className="col-span-3" 
+                placeholder="123-456-7890"
+                className="rounded-lg border focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button type="submit">Save changes</Button>
+          <DialogFooter className="flex justify-between pt-4">
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" className="px-6">
+              Save Changes
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
